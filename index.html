@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Our Wedding – Anthony Chapel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Georgia", serif;
+      background: #111;
+      color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      background: #000;
+    }
+
+  /* Background image */
+.chapel-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://garvangardens.org/wp-content/uploads/2020/04/Anthony-Chapel-Interior.jpg");
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.4);
+  transition: filter 1s ease;
+}
+    .scene.open .chapel-bg {
+      filter: brightness(0.9);
+    }
+
+    /* Doors container */
+    .doors {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      pointer-events: auto;
+      cursor: pointer;
+      perspective: 2000px;
+    }
+
+    .door {
+      flex: 1;
+      background: linear-gradient(135deg, #3b2a1a, #6b4a2b);
+      border-right: 2px solid rgba(0, 0, 0, 0.6);
+      border-left: 2px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      transform-origin: center left;
+      transition: transform 1.2s ease-in-out;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .door.right {
+      transform-origin: center right;
+      border-right: 2px solid rgba(255, 255, 255, 0.05);
+      border-left: 2px solid rgba(0, 0, 0, 0.6);
+    }
+
+    .door::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: 12%;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #f9f3d2, #b08a3c);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .door.right::before {
+      left: 12%;
+      right: auto;
+    }
+
+    .scene.open .door.left {
+      transform: rotateY(-100deg);
+    }
+
+    .scene.open .door.right {
+      transform: rotateY(100deg);
+    }
+
+    /* Overlay text on doors */
+    .door-labels {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .door-labels h1 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .door-labels h2 {
+      font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .door-labels p {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .door-labels span {
+      display: inline-block;
+      border-bottom: 1px solid rgba(245, 245, 245, 0.6);
+      padding-bottom: 0.2rem;
+    }
+
+    /* Details content */
+    #details {
+      position: absolute;
+      inset: 0;
+      padding: 2.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      color: #fdfdfd;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 1.2s ease 0.4s, transform 1.2s ease 0.4s;
+      overflow-y: auto;
+    }
+
+    .scene.open #details {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #details h3 {
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      opacity: 0.9;
+    }
+
+    #details h1 {
+      font-size: clamp(2.1rem, 3.4vw, 2.6rem);
+      margin-bottom: 0.4rem;
+    }
+
+    #details h2 {
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    #details .meta {
+      margin-bottom: 1.8rem;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    #details .meta strong {
+      font-weight: 600;
+    }
+
+    #details .section-title {
+      margin-top: 1.4rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    #details .section-body {
+      margin-top: 0.4rem;
+      font-size: 0.98rem;
+      line-height: 1.7;
+      max-width: 32rem;
+    }
+
+    #details a {
+      color: #ffe9a9;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    #details a:hover {
+      color: #ffffff;
+    }
+
+    .hint {
+      position: absolute;
+      bottom: 1.2rem;
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @media (max-width: 700px) {
+      #details {
+        padding: 1.8rem 1.6rem;
+        align-items: flex-start;
+      }
+
+      .door-labels h1 {
+        letter-spacing: 0.12em;
+      }
+
+      .door-labels h2 {
+        letter-spacing: 0.18em;
+      }
+
+      .hint {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<audio id="music" src="wedding-music.mp3"></audio>
+<body>
+  <div class="scene" id="scene">
+    <div class="chapel-bg"></div>
+
+    <!-- Doors -->
+    <div class="doors" id="doors">
+      <div class="door left"></div>
+      <div class="door right"></div>
+
+      <div class="door-labels">
+        <h1>Our Wedding</h1>
+        <h2>Anthony Chapel</h2>
+        <p><span>Click the doors to enter</span></p>
+      </div>
+    </div>
+
+    <!-- Wedding details revealed behind doors -->
+    <section id="details" aria-hidden="true">
+      <h3>We joyfully invite you to</h3>
+      <h1>[Roberto] &amp; [Lidia]</h1>
+      <h2>to celebrate their marriage</h2>
+
+      <div class="meta">
+        <p><strong>Date:</strong> [Day of Week], [Month] [Day], [Year]</p>
+        <p><strong>Time:</strong> [Ceremony Time]</p>
+        <p><strong>Location:</strong> Anthony Chapel<br />
+          Garvan Woodland Gardens, Hot Springs, Arkansas
+        </p>
+      </div>
+
+      <p class="section-title">Reception</p>
+      <p class="section-body">
+        Please join us for a reception following the ceremony at
+        [Reception Venue Name], located at [Reception Address]. Dinner,
+        drinks, and dancing to follow.
+      </p>
+
+      <p class="section-title">Dress code</p>
+      <p class="section-body">
+        [Formal / Semi-formal / Cocktail attire]. The chapel is surrounded by
+        beautiful woodland gardens, so comfortable shoes for walking on paths
+        are recommended.
+      </p>
+
+      <p class="section-title">Travel &amp; accommodations</p>
+      <p class="section-body">
+        We recommend staying in or near Hot Springs, Arkansas. A few nearby
+        options include [Hotel 1], [Hotel 2], and [Hotel 3]. For directions to
+        Anthony Chapel, search for “Garvan Woodland Gardens – Anthony Chapel”
+        in your maps app.
+      </p>
+
+      <p class="section-title">Registry</p>
+      <p class="section-body">
+        Your presence is the greatest gift. If you wish to honor us with a
+        gift, we are registered at
+        <a href="[Registry Link]">[Registry Store or Website]</a>.
+      </p>
+
+      <p class="section-title">RSVP</p>
+      <p class="section-body">
+        Please RSVP by [RSVP Date] at
+        <a href="[RSVP Link]">[RSVP Link]</a>
+        or by emailing us at [your-email@example.com].
+      </p>
+    </section>
+
+    <div class="hint">Click the doors to reveal the details</div>
+  </div>
+
+<script>
+const scene = document.getElementById("scene");
+const doors = document.getElementById("doors");
+const details = document.getElementById("details");
+const music = document.getElementById("music");
+
+doors.addEventListener("click", () => {
+  scene.classList.add("open");
+  details.setAttribute("aria-hidden", "false");
+  music.play();
+});
+</script>
+</body>
+</html>
