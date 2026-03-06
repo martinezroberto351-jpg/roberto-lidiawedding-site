@@ -34,7 +34,7 @@
       background: #000;
     }
 
-    /* Background image – replace URL with a photo of Anthony Chapel if you want */
+    /* Background image – url("https://garvangardens.org/wp-content/uploads/2020/04/Anthony-Chapel-Interior.jpg");
     .chapel-bg {
       position: absolute;
       inset: 0;
@@ -252,6 +252,7 @@
     }
   </style>
 </head>
+<audio id="music" src="wedding-music.mp3"></audio>
 <body>
   <div class="scene" id="scene">
     <div class="chapel-bg"></div>
@@ -322,15 +323,17 @@
     <div class="hint">Click the doors to reveal the details</div>
   </div>
 
-  <script>
-    const scene = document.getElementById("scene");
-    const doors = document.getElementById("doors");
-    const details = document.getElementById("details");
+<script>
+const scene = document.getElementById("scene");
+const doors = document.getElementById("doors");
+const details = document.getElementById("details");
+const music = document.getElementById("music");
 
-    doors.addEventListener("click", () => {
-      scene.classList.add("open");
-      details.setAttribute("aria-hidden", "false");
-    });
-  </script>
+doors.addEventListener("click", () => {
+  scene.classList.add("open");
+  details.setAttribute("aria-hidden", "false");
+  music.play();
+});
+</script>
 </body>
 </html>
